@@ -63,11 +63,40 @@ def update_product(product_id):
     #atualiza se valido
     product = Product.query.get(product_id)
     if not product: 
-        db.session.delete(product)
-        db.session.commit()
-        return jsonify({"message": "Product deleted successully"})
-    return jsonify({"message": "Product not found"}),404
+        return jsonify({"message": "Product not found"}),404
+    
 
+    data = request.json
+    if 'name' in data:
+         product.name = data['name']
+    
+    if 'price' in data:
+         product.price = data['price']
+
+    if 'description' in data:
+         product.description = data['description']
+    db.session.commit()    
+    return jsonify({"message": "Product updated sucessfully"})
+
+
+
+#Rota de listar todos os produtos
+@app.route('/api/products', methods=['GET'])
+def get_products():
+    products = Product.query.all()
+    product_list = []
+    for product in products:
+        product_data = {
+            "id": product.id,
+            "name": product.name,
+            "price": product.price,
+            "description": product.description
+        }
+        product_list.append(product_data)
+    return jsonify(product_list)
+
+
+ 
 
 #Rota raíz
 @app.route('/')
