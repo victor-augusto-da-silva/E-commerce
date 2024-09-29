@@ -62,7 +62,7 @@ def get_products_details(product_id):
 def update_product(product_id): 
     #atualiza se valido
     product = Product.query.get(product_id)
-    if product: 
+    if not product: 
         db.session.delete(product)
         db.session.commit()
         return jsonify({"message": "Product deleted successully"})
