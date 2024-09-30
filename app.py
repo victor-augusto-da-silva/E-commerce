@@ -1,7 +1,8 @@
 #importação
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_cors import CORS
+from flask_login import UserMixin
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ecomerce.db'
@@ -10,8 +11,17 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ecomerce.db'
 
 #inicia conexão 
 db=SQLAlchemy(app)
+CORS(app)
 
-#modelagem
+
+#modelagem usuario
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer,primary_key=True)
+    username = db.Column(db.String(100), nullable=False, unique=True)
+    password = db.Column(db.String(100),nullabl=False)
+
+
+#modelagem produto
 class Product(db.Model): 
     id = db.Column(db.Integer, primary_key=True) 
     name = db.Column(db.String(120), nullable=False)
@@ -89,13 +99,13 @@ def get_products():
         product_data = {
             "id": product.id,
             "name": product.name,
-            "price": product.price,
-            "description": product.description
+            "price": product.price       
         }
         product_list.append(product_data)
     return jsonify(product_list)
 
 
+@app.route('/')
  
 
 #Rota raíz
